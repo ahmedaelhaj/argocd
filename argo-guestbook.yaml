@@ -12,6 +12,8 @@ spec:
     path: guestbook
     repoURL: "https://github.com/ahmedaelhaj/argocd.git"
     targetRevision: main
+    directory:
+      recurse: true
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
