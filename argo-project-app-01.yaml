@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: demo-project
+  name: dev-project-01
   namespace: argocd
 spec:
-  description: Demo Project
+  description: Dev Project 01
   sourceRepos:
   - '*'
 
@@ -27,9 +27,9 @@ metadata:
   namespace: argocd
 spec: 
   destination: 
-    namespace: guestbook
+    namespace: ns-01
     server: "https://kubernetes.default.svc"
-  project: demo-project
+  project: dev-project-01
   source: 
     path: guestbook
     repoURL: "https://github.com/ahmedaelhaj/argocd.git"

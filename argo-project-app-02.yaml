@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: dev-project
+  name: dev-project-02
   namespace: argocd
 spec:
-  description: Dev Project
+  description: Dev Project 02
   sourceRepos:
   - '*'
 
   destinations:
-  - namespace: guestbook
+  - namespace: ns-02
     server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
@@ -27,9 +27,9 @@ metadata:
   namespace: argocd
 spec: 
   destination: 
-    namespace: guestbook
+    namespace: ns-02
     server: "https://kubernetes.default.svc"
-  project: dev-project
+  project: dev-project-02
   source: 
     path: guestbook
     repoURL: "https://github.com/ahmedaelhaj/argocd.git"
