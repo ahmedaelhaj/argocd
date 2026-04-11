@@ -1,0 +1,41 @@
+# --- Project Configuration (The Security Boundary) ---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: guestbook-01
+  namespace: argocd # Must be the namespace where ArgoCD is installed
+spec:
+  description: Guest Book 01
+  # Allowed source repositories for this project (* means any repo)
+  sourceRepos: ["*"]
+  destinations:
+  # Restricts where this project can deploy (Cluster and Namespace)
+  - namespace: 'guestbook-01' 
+    server: 'https://default.svc'
+  # Allows the project to manage any kind of Kubernetes resource
+  clusterResourceWhitelist: [{group: '*', kind: '*'}]
+
+---
+
+# --- Application Configuration (The Deployment Logic) ---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: guestbook-01 # Unique name for this specific app instance
+  namespace: argocd
+spec: 
+  # Links this application to the Project defined above
+  project: guestbook-01
+  destination: 
+    namespace: guestbook-01 # The target namespace in the cluster
+    server: "https://default.svc"
+  source: 
+    path: guestbook # Folder inside the repo containing manifests
+    repoURL: "https://github.com"
+    targetRevision: main # Tracks the 'main' branch for changes
+  syncPolicy:
+    automated: 
+      prune: true     # Deletes resources if they are removed from Git
+      selfHeal: true  # Reverts manual cluster changes to match Git
+    syncOptions:
+      - CreateNamespace=true # Automatically creates 'guestbook-01' if missing

@@ -1,0 +1,41 @@
+# --- Project Configuration for Instance 02 ---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: guestbook-02 # Dedicated project name for the second environment
+  namespace: argocd
+spec:
+  description: Guest Book 02
+  # Allow any repository to be used by this project
+  sourceRepos: ["*"]
+  destinations:
+  # Restrict this project's deployments strictly to the 'guestbook-02' namespace
+  - namespace: 'guestbook-02'
+    server: 'https://kubernetes.default.svc'
+  # Grant permission to manage all Kubernetes resource types
+  clusterResourceWhitelist: [{group: '*', kind: '*'}]
+
+---
+
+# --- Application Configuration for Instance 02 ---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: guestbook-02 # Unique Application name to avoid cluster-wide conflicts
+  namespace: argocd
+spec: 
+  # Links this application specifically to the 'guestbook-02' project
+  project: guestbook-02
+  destination: 
+    namespace: guestbook-02 # Deploying to a separate isolated namespace
+    server: "https://kubernetes.default.svc"
+  source: 
+    path: guestbook # Reusing the same source folder from the repo
+    repoURL: "https://github.com/ahmedaelhaj/argocd.git"
+    targetRevision: main
+  syncPolicy:
+    automated: 
+      prune: true     # Removes cluster resources no longer in Git
+      selfHeal: true  # Automatically fixes manual cluster overrides
+    syncOptions:
+      - CreateNamespace=true # Ensures the 'guestbook-02' namespace exists
